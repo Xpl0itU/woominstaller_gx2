@@ -1,73 +1,179 @@
+#-------------------------------------------------------------------------------
 .SUFFIXES:
+#-------------------------------------------------------------------------------
 
-ifeq ($(strip $(WUT_ROOT)),)
-$(error "Please ensure WUT_ROOT is in your environment.")
+ifeq ($(strip $(DEVKITPRO)),)
+$(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>/devkitpro")
 endif
 
-ifeq ($(findstring CYGWIN,$(shell uname -s)),CYGWIN)
-ROOT := $(shell cygpath -w ${CURDIR})
-WUT_ROOT := $(shell cygpath -w ${WUT_ROOT})
-else
-ROOT := $(CURDIR)
-endif
+TOPDIR ?= $(CURDIR)
 
-include $(WUT_ROOT)/rules/rpl.mk
+#-------------------------------------------------------------------------------
+# APP_NAME sets the long name of the application
+# APP_SHORTNAME sets the short name of the application
+# APP_AUTHOR sets the author of the application
+#-------------------------------------------------------------------------------
+APP_NAME	    := SaveMii WUT Port
+APP_SHORTNAME	    := SaveMii
+APP_AUTHOR	    := DaThinkingChair
 
-TARGET   := $(notdir $(CURDIR))
-BUILD    := build
-SOURCE   := src src/matrix
-INCLUDE  := include
-DATA     := data
-LIBS     := -lcrt -lgcc -lm -lcoreinit -lgx2 -lvpad -lproc_ui -lsysapp -lgd -lpng -lz -ljpeg -lfreetype -lm
+include $(DEVKITPRO)/wut/share/wut_rules
 
-CFLAGS   += -O2 -Wall -std=c11
-CXXFLAGS += -O2 -Wall
+#-------------------------------------------------------------------------------
+# TARGET is the name of the output
+# BUILD is the directory where object files & intermediate files will be placed
+# SOURCES is a list of directories containing source code
+# DATA is a list of directories containing data files
+# INCLUDES is a list of directories containing header files
+# CONTENT is the path to the bundled folder that will be mounted as /vol/content/
+# ICON is the game icon, leave blank to use default rule
+# TV_SPLASH is the image displayed during bootup on the TV, leave blank to use default rule
+# DRC_SPLASH is the image displayed during bootup on the DRC, leave blank to use default rule
+#-------------------------------------------------------------------------------
+TARGET		:=	woominstaller_gx2
+BUILD		:=	build
+SOURCES		:=	src src/matrix
+DATA		:=	data
+INCLUDES	:=	include
+CONTENT		:=
+ICON		:=	
+TV_SPLASH	:=	
+DRC_SPLASH	:=	
 
+#-------------------------------------------------------------------------------
+# options for code generation
+#-------------------------------------------------------------------------------
+CFLAGS	:=	-std=gnu2x -g -Wall -Ofast -ffunction-sections `freetype-config --cflags` \
+			$(MACHDEP) $(INCLUDE) -D__WIIU__ -D__WUT__ -D__wiiu__
+
+CXXFLAGS	:= -std=gnu++20 -g -Wall -Wno-int-in-bool-context -Wno-builtin-declaration-mismatch -Wno-format-overflow -Ofast -fpermissive -ffunction-sections `freetype-config --cflags` \
+			$(MACHDEP) $(INCLUDE) -D__WIIU__ -D__WUT__ -D__wiiu__
+
+ASFLAGS	:=	-g $(ARCH)
+LDFLAGS	=	-g $(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map)
+
+LIBS	:= -lwut -lgd -lpng -lz -ljpeg -lfreetype -lm
+
+#-------------------------------------------------------------------------------
+# list of directories containing libraries, this must be the top level
+# containing include and lib
+#-------------------------------------------------------------------------------
+LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT) $(WUT_ROOT)/usr
+
+#-------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#-------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
+#-------------------------------------------------------------------------------
 
-export OUTPUT   := $(ROOT)/$(TARGET)
-export VPATH    := $(foreach dir,$(SOURCE),$(ROOT)/$(dir)) \
-                   $(foreach dir,$(DATA),$(ROOT)/$(dir))
-export BUILDDIR := $(ROOT)
-export DEPSDIR  := $(BUILDDIR)
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export TOPDIR	:=	$(CURDIR)
 
-CFILES    := $(foreach dir,$(SOURCE),$(notdir $(wildcard $(dir)/*.c)))
-CXXFILES  := $(foreach dir,$(SOURCE),$(notdir $(wildcard $(dir)/*.cpp)))
-SFILES    := $(foreach dir,$(SOURCE),$(notdir $(wildcard $(dir)/*.S)))
+export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
 
-ifeq ($(strip $(CXXFILES)),)
-export LD := $(CC)
+export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+
+CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+
+#-------------------------------------------------------------------------------
+# use CXX for linking C++ projects, CC for standard C
+#-------------------------------------------------------------------------------
+ifeq ($(strip $(CPPFILES)),)
+#-------------------------------------------------------------------------------
+	export LD	:=	$(CC)
+#-------------------------------------------------------------------------------
 else
-export LD := $(CXX)
+#-------------------------------------------------------------------------------
+	export LD	:=	$(CXX)
+#-------------------------------------------------------------------------------
+endif
+#-------------------------------------------------------------------------------
+
+export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
+export OFILES_SRC	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+export OFILES 	:=	$(OFILES_BIN) $(OFILES_SRC)
+export HFILES_BIN	:=	$(addsuffix .h,$(subst .,_,$(BINFILES)))
+
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(CURDIR)/$(BUILD)
+
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+ifneq (,$(strip $(CONTENT)))
+	export APP_CONTENT := $(TOPDIR)/$(CONTENT)
 endif
 
-export OFILES := $(CFILES:.c=.o) \
-                 $(CXXFILES:.cpp=.o) \
-                 $(SFILES:.S=.o)
-export INCLUDES := $(foreach dir,$(INCLUDE),-I$(ROOT)/$(dir)) \
-                   -I$(ROOT)/$(BUILD) -I $(DEVKITPPC)/include
+ifneq (,$(strip $(ICON)))
+	export APP_ICON := $(TOPDIR)/$(ICON)
+else ifneq (,$(wildcard $(TOPDIR)/$(TARGET).png))
+	export APP_ICON := $(TOPDIR)/$(TARGET).png
+else ifneq (,$(wildcard $(TOPDIR)/icon.png))
+	export APP_ICON := $(TOPDIR)/icon.png
+endif
 
-.PHONY: $(BUILD) clean
+ifneq (,$(strip $(TV_SPLASH)))
+	export APP_TV_SPLASH := $(TOPDIR)/$(TV_SPLASH)
+else ifneq (,$(wildcard $(TOPDIR)/tv-splash.png))
+	export APP_TV_SPLASH := $(TOPDIR)/tv-splash.png
+else ifneq (,$(wildcard $(TOPDIR)/splash.png))
+	export APP_TV_SPLASH := $(TOPDIR)/splash.png
+endif
+
+ifneq (,$(strip $(DRC_SPLASH)))
+	export APP_DRC_SPLASH := $(TOPDIR)/$(DRC_SPLASH)
+else ifneq (,$(wildcard $(TOPDIR)/drc-splash.png))
+	export APP_DRC_SPLASH := $(TOPDIR)/drc-splash.png
+else ifneq (,$(wildcard $(TOPDIR)/splash.png))
+	export APP_DRC_SPLASH := $(TOPDIR)/splash.png
+endif
+
+.PHONY: $(BUILD) clean all
+
+#-------------------------------------------------------------------------------
+all: $(BUILD)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(ROOT)/Makefile
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
+#-------------------------------------------------------------------------------
 clean:
-	@echo "[RM]  $(notdir $(OUTPUT))"
-	@rm -rf $(BUILD) $(OUTPUT).elf $(OUTPUT).rpx $(OUTPUT).a $(OUTPUT).woomy
-	@rm $(OUTPUT)/code/*.rpx
+	@echo clean ...
+	@rm -fr $(BUILD) $(TARGET).wuhb $(TARGET).rpx $(TARGET).elf
 
+#-------------------------------------------------------------------------------
 else
+.PHONY:	all
 
-DEPENDS	:= $(OFILES:.o=.d)
+DEPENDS	:=	$(OFILES:.o=.d)
 
-$(OUTPUT).woomy: $(OUTPUT).rpx
-	cp $(OUTPUT).rpx $(OUTPUT)/code/
-	makefst -out $(OUTPUT).woomy -name "Woominstaller" -internal "Woominstaller Application" -entry "woomy" -icon "$(OUTPUT)/meta/iconTex.tga" $(OUTPUT)/
-$(OUTPUT).rpx: $(OUTPUT).elf
-$(OUTPUT).elf: $(OFILES)
+#-------------------------------------------------------------------------------
+# main targets
+#-------------------------------------------------------------------------------
+all	:	$(OUTPUT).wuhb
+
+$(OUTPUT).wuhb	:	$(OUTPUT).rpx
+$(OUTPUT).rpx	:	$(OUTPUT).elf
+$(OUTPUT).elf	:	$(OFILES)
+
+$(OFILES_SRC)	: $(HFILES_BIN)
+
+#-------------------------------------------------------------------------------
+# you need a rule like this for each extension you use as binary data
+#-------------------------------------------------------------------------------
+%.bin.o	%_bin.h :	%.bin
+#-------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@$(bin2o)
 
 -include $(DEPENDS)
 
+#-------------------------------------------------------------------------------
 endif
+#-------------------------------------------------------------------------------

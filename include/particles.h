@@ -8,12 +8,9 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef PARTICLES_H
-#define PARTICLES_H
+#pragma once
 
 #define NUM_PARTICLES 100
 
 void particles_load();
 void particles_draw(bool screen);
-
-#endif

@@ -9,8 +9,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#pragma once
 
 #include <wut_types.h>
 #include <coreinit/debug.h>
@@ -28,23 +27,21 @@
 typedef struct tga_hdr tga_hdr;
 struct __attribute__((__packed__)) tga_hdr
 {
-    u8 idlength;
-    u8 colormaptype;
-    u8 datatype;
-    u16 colormaporigin;
-    u16 colormaplength;
-    u8 colormapdepth;
-    u16 x_origin;
-    u16 y_origin;
-    u16 width;
-    u16 height;
-    u8 bpp;
-    u8 imagedescriptor;
+    uint8_t idlength;
+    uint8_t colormaptype;
+    uint8_t datatype;
+    uint16_t colormaporigin;
+    uint16_t colormaplength;
+    uint8_t colormapdepth;
+    uint16_t x_origin;
+    uint16_t y_origin;
+    uint16_t width;
+    uint16_t height;
+    uint8_t bpp;
+    uint8_t imagedescriptor;
 };
 
 void load_tga(GX2Texture *texture, void* img_data);
 bool load_img_texture(GX2Texture *texture, char *path);
 bool load_img_texture_mask(GX2Texture *texture, char *path, char *mask);
 void free_img_texture(GX2Texture *texture);
-
-#endif

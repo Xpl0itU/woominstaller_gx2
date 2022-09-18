@@ -16,9 +16,14 @@
  ****************************************************************************/
 #include <malloc.h>
 #include <string.h>
+#include <coreinit/memheap.h>
+#include <coreinit/memfrmheap.h>
+#include <coreinit/memexpheap.h>
+/*
 #include <coreinit/baseheap.h>
 #include <coreinit/frameheap.h>
 #include <coreinit/expandedheap.h>
+*/
 #include "memory.h"
 
 #define MEMORY_ARENA_1          0

@@ -1,5 +1,4 @@
-#ifndef __GX2_EXT_H_
-#define __GX2_EXT_H_
+#pragma once
 
 #define GX2_COMP_SEL_NONE                               0x04040405
 #define GX2_COMP_SEL_X001                               0x00040405
@@ -13,14 +12,14 @@
 #define GX2_COMP_SEL_WZYX                               0x03020100
 #define GX2_COMP_SEL_WXYZ                               0x03000102
 
-static const u32 attribute_dest_comp_selector[20] = {
+static const uint32_t attribute_dest_comp_selector[20] = {
     GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01, GX2_COMP_SEL_X001, GX2_COMP_SEL_X001,  GX2_COMP_SEL_XY01, GX2_COMP_SEL_X001,
     GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01, GX2_COMP_SEL_XY01, GX2_COMP_SEL_XYZ1, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW,
     GX2_COMP_SEL_XY01, GX2_COMP_SEL_XY01, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZ1, GX2_COMP_SEL_XYZ1,
     GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW
 };
 
-static const u32 texture_comp_selector[54] = {
+static const uint32_t texture_comp_selector[54] = {
     GX2_COMP_SEL_NONE, GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01, GX2_COMP_SEL_NONE, GX2_COMP_SEL_NONE, GX2_COMP_SEL_X001,
     GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01, GX2_COMP_SEL_XYZ1, GX2_COMP_SEL_XYZ1, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW,
     GX2_COMP_SEL_WZYX, GX2_COMP_SEL_X001, GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01, GX2_COMP_SEL_XY01, GX2_COMP_SEL_NONE,
@@ -32,7 +31,7 @@ static const u32 texture_comp_selector[54] = {
     GX2_COMP_SEL_XYZ1, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_XYZW, GX2_COMP_SEL_X001, GX2_COMP_SEL_XY01
 };
 
-static inline void GX2InitAttribStream(GX2AttribStream* attr, u32 location, u32 buffer, u32 offset, s32 format)
+static inline void GX2InitAttribStream(GX2AttribStream* attr, uint32_t location, uint32_t buffer, uint32_t offset, int32_t format)
 {
     attr->location = location;
     attr->buffer = buffer;
@@ -44,7 +43,7 @@ static inline void GX2InitAttribStream(GX2AttribStream* attr, u32 location, u32 
     attr->endianSwap  = GX2_ENDIAN_SWAP_DEFAULT;
 }
 
-static inline void GX2InitDepthBuffer(GX2DepthBuffer *depthBuffer, s32 dim, u32 width, u32 height, u32 depth, s32 format, s32 aa)
+static inline void GX2InitDepthBuffer(GX2DepthBuffer *depthBuffer, int32_t dim, uint32_t width, uint32_t height, uint32_t depth, int32_t format, int32_t aa)
 {
     depthBuffer->surface.dim = dim;
     depthBuffer->surface.width = width;
@@ -67,7 +66,7 @@ static inline void GX2InitDepthBuffer(GX2DepthBuffer *depthBuffer, s32 dim, u32 
     GX2InitDepthBufferRegs(depthBuffer);
 }
 
-static inline void GX2InitColorBuffer(GX2ColorBuffer *colorBuffer, s32 dim, u32 width, u32 height, u32 depth, s32 format, s32 aa)
+static inline void GX2InitColorBuffer(GX2ColorBuffer *colorBuffer, int32_t dim, uint32_t width, uint32_t height, uint32_t depth, int32_t format, int32_t aa)
 {
     colorBuffer->surface.dim = dim;
     colorBuffer->surface.width = width;
@@ -85,7 +84,7 @@ static inline void GX2InitColorBuffer(GX2ColorBuffer *colorBuffer, s32 dim, u32 
     colorBuffer->surface.swizzle = 0;
     colorBuffer->surface.alignment = 0;
     colorBuffer->surface.pitch = 0;
-    u32 i;
+    uint32_t i;
     for(i = 0; i < 13; i++)
         colorBuffer->surface.mipLevelOffset[i] = 0;
     colorBuffer->viewMip = 0;
@@ -100,7 +99,7 @@ static inline void GX2InitColorBuffer(GX2ColorBuffer *colorBuffer, s32 dim, u32 
     GX2InitColorBufferRegs(colorBuffer);
 }
 
-static inline void GX2InitTexture(GX2Texture *tex, u32 width, u32 height, u32 depth, u32 mipLevels, s32 format, s32 dim, s32 tile)
+static inline void GX2InitTexture(GX2Texture *tex, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevels, int32_t format, int32_t dim, int32_t tile)
 {
     tex->surface.dim = dim;
     tex->surface.width = width;
@@ -118,7 +117,7 @@ static inline void GX2InitTexture(GX2Texture *tex, u32 width, u32 height, u32 de
     tex->surface.swizzle = 0;
     tex->surface.alignment = 0;
     tex->surface.pitch = 0;
-    u32 i;
+    uint32_t i;
     for(i = 0; i < 13; i++)
         tex->surface.mipLevelOffset[i] = 0;
     tex->viewFirstMip = 0;
@@ -132,5 +131,3 @@ static inline void GX2InitTexture(GX2Texture *tex, u32 width, u32 height, u32 de
     GX2CalcSurfaceSizeAndAlignment(&tex->surface);
     GX2InitTextureRegs(tex);
 }
-
-#endif

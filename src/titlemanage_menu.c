@@ -18,10 +18,10 @@ void titlemanage_buttons_deinit();
 int titlemanage_next_state;
 bool titlemanage_transitioning_out = false;
 
-button_t *button_back;
-button_t *button_left;
-button_t *button_right;
-button_t **entry_buttons;
+extern button_t *button_back;
+extern button_t *button_left;
+extern button_t *button_right;
+extern button_t **entry_buttons;
 int titlemanage_num_entries = 10;
 GX2Texture **button_textures;
 
@@ -34,7 +34,7 @@ int current_page = 0;
 int target_page = 0;
 int num_pages = 0; //TODO
 
-u64 titlemanage_title = 0x000500001014b700;
+uint64_t titlemanage_title = 0x000500001014b700;
 
 int get_save_path_list(char **titles)
 {
@@ -42,8 +42,8 @@ int get_save_path_list(char **titles)
     char usr_tmp[0x200];
     char xml_tmp[0x200];
     
-    sprintf(sys_tmp, "/vol/storage_mlc01/sys/save/%08x/%08x", (u32)(titlemanage_title >> 32), (u32)(titlemanage_title));
-    sprintf(usr_tmp, "/vol/storage_mlc01/usr/save/%08x/%08x", (u32)(titlemanage_title >> 32), (u32)(titlemanage_title));
+    sprintf(sys_tmp, "/vol/storage_mlc01/sys/save/%08x/%08x", (uint32_t)(titlemanage_title >> 32), (uint32_t)(titlemanage_title));
+    sprintf(usr_tmp, "/vol/storage_mlc01/usr/save/%08x/%08x", (uint32_t)(titlemanage_title >> 32), (uint32_t)(titlemanage_title));
 
     int num_saves = 0;
     sprintf(xml_tmp, "%s/meta/saveinfo.xml", usr_tmp);
@@ -152,7 +152,7 @@ int get_title_path_list(char **titles)
 
 void titlemanage_button_press_title(button_t *button)
 {
-    u64 tid = ((u64)button->extra_data_2 << 32) + (u32)button->extra_data;
+    uint64_t tid = ((uint64_t)button->extra_data_2 << 32) + (uint32_t)button->extra_data;
     
     titlemanage_title = tid;
     titlemanage_browse_installed = false;

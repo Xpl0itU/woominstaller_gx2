@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef ICON_MENU_H
-#define ICON_MENU_H
+#pragma once
 
 #include <wut.h>
 #include <memory.h>
@@ -23,6 +22,7 @@
 #include "button.h"
 #include "install_menu.h"
 #include "filebrowse_menu.h"
+#include "titlemanage_menu.h"
 
 typedef struct menu_index_t
 {
@@ -36,5 +36,3 @@ void icon_menu_init();
 void icon_menu_update();
 void icon_menu_draw(bool screen);
 void icon_menu_draw_icons();
-
-#endif

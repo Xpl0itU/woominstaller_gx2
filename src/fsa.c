@@ -20,20 +20,21 @@
 typedef struct
 {
 	void* ptr;
-	u32 len;
-	u32 unk;
+	uint32_t len;
+	uint32_t unk;
 }iovec_s;
-
+/*
 int (*IOS_Open)(char *path, int mode);
 int (*IOS_Close)(int fd);
 int32_t (*IOS_Ioctl)(int32_t fd, int32_t request, void *buffer_in, int32_t bytes_in, void *buffer_io, int32_t bytes_io);
 int32_t (*IOS_Ioctlv)(int32_t fd, int32_t request, int32_t InCount, int32_t OutCont, void *vec);
+*/
 static int fsa_fd;
 int FSA_Init()
 {
     if(IOS_Open == NULL)
     {
-        OSDynLoadModule coreinit_handle;
+        OSDynLoad_Module coreinit_handle;
         OSDynLoad_Acquire("coreinit.rpl", &coreinit_handle);
         OSDynLoad_FindExport(coreinit_handle, 0, "IOS_Open", (void**)&IOS_Open);
     }
@@ -47,7 +48,7 @@ int FSA_Exit()
 {
     if(IOS_Close == NULL)
     {
-        OSDynLoadModule coreinit_handle;
+        OSDynLoad_Module coreinit_handle;
         OSDynLoad_Acquire("coreinit.rpl", &coreinit_handle);
         OSDynLoad_FindExport(coreinit_handle, 0, "IOS_Close", (void**)&IOS_Close);
     }
@@ -58,7 +59,7 @@ int svcIoctlv(int fd, int num, int read_cnt, int write_cnt, void* iovec)
 {
     if(IOS_Ioctlv == NULL)
     {
-        OSDynLoadModule coreinit_handle;
+        OSDynLoad_Module coreinit_handle;
         OSDynLoad_Acquire("coreinit.rpl", &coreinit_handle);
         OSDynLoad_FindExport(coreinit_handle, 0, "IOS_Ioctlv", (void**)&IOS_Ioctlv);
     }
@@ -69,7 +70,7 @@ int svcIoctl(int32_t fd, int32_t request, void *buffer_in, int32_t bytes_in, voi
 {
     if(IOS_Ioctl == NULL)
     {
-        OSDynLoadModule coreinit_handle;
+        OSDynLoad_Module coreinit_handle;
         OSDynLoad_Acquire("coreinit.rpl", &coreinit_handle);
         OSDynLoad_FindExport(coreinit_handle, 0, "IOS_Ioctl", (void**)&IOS_Ioctl);
     }
@@ -90,19 +91,19 @@ static void freeIobuf(void* ptr)
 	MEM2_free(ptr);
 }
 
-int FSA_Mount(char* device_path, char* volume_path, u32 flags, char* arg_string, int arg_string_len)
+int FSA_Mount(char* device_path, char* volume_path, uint32_t flags, char* arg_string, int arg_string_len)
 {
-	u8* iobuf = allocIobuf();
-	u8* inbuf8 = iobuf;
-	u8* outbuf8 = &iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint8_t* inbuf8 = iobuf;
+	uint8_t* outbuf8 = &iobuf[0x520];
 	iovec_s* iovec = (iovec_s*)&iobuf[0x7C0];
-	u32* inbuf = (u32*)inbuf8;
-	u32* outbuf = (u32*)outbuf8;
+	uint32_t* inbuf = (uint32_t*)inbuf8;
+	uint32_t* outbuf = (uint32_t*)outbuf8;
 
 	strncpy((char*)&inbuf8[0x04], device_path, 0x27F);
 	strncpy((char*)&inbuf8[0x284], volume_path, 0x27F);
-	inbuf[0x504 / 4] = (u32)flags;
-	inbuf[0x508 / 4] = (u32)arg_string_len;
+	inbuf[0x504 / 4] = (uint32_t)flags;
+	inbuf[0x508 / 4] = (uint32_t)arg_string_len;
 
 	iovec[0].ptr = inbuf;
 	iovec[0].len = 0x520;
@@ -117,11 +118,11 @@ int FSA_Mount(char* device_path, char* volume_path, u32 flags, char* arg_string,
 	return ret;
 }
 
-int FSA_Unmount(char* path, u32 flags)
+int FSA_Unmount(char* path, uint32_t flags)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], path, 0x27F);
 	inbuf[0x284 / 4] = flags;
@@ -132,11 +133,11 @@ int FSA_Unmount(char* path, u32 flags)
 	return ret;
 }
 
-int FSA_MakeDir(char* path, u32 flags)
+int FSA_MakeDir(char* path, uint32_t flags)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], path, 0x27F);
 	inbuf[0x284 / 4] = flags;
@@ -149,9 +150,9 @@ int FSA_MakeDir(char* path, u32 flags)
 
 int FSA_OpenDir(char* path, int* outHandle)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], path, 0x27F);
 
@@ -165,9 +166,9 @@ int FSA_OpenDir(char* path, int* outHandle)
 
 int FSA_ReadDir(int handle, directoryEntry_s* out_data)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	inbuf[1] = handle;
 
@@ -181,9 +182,9 @@ int FSA_ReadDir(int handle, directoryEntry_s* out_data)
 
 int FSA_CloseDir(int handle)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	inbuf[1] = handle;
 
@@ -195,9 +196,9 @@ int FSA_CloseDir(int handle)
 
 int FSA_OpenFile(char* path, char* mode, int* outHandle)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], path, 0x27F);
 	strncpy((char*)&inbuf[0xA1], mode, 0x10);
@@ -210,14 +211,14 @@ int FSA_OpenFile(char* path, char* mode, int* outHandle)
 	return ret;
 }
 
-int _FSA_ReadWriteFile(void* data, u32 size, u32 cnt, int fileHandle, u32 flags, bool read)
+int _FSA_ReadWriteFile(void* data, uint32_t size, uint32_t cnt, int fileHandle, uint32_t flags, bool read)
 {
-	u8* iobuf = allocIobuf();
-	u8* inbuf8 = iobuf;
-	u8* outbuf8 = &iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint8_t* inbuf8 = iobuf;
+	uint8_t* outbuf8 = &iobuf[0x520];
 	iovec_s* iovec = (iovec_s*)&iobuf[0x7C0];
-	u32* inbuf = (u32*)inbuf8;
-	u32* outbuf = (u32*)outbuf8;
+	uint32_t* inbuf = (uint32_t*)inbuf8;
+	uint32_t* outbuf = (uint32_t*)outbuf8;
 
 	inbuf[0x08 / 4] = size;
 	inbuf[0x0C / 4] = cnt;
@@ -241,21 +242,21 @@ int _FSA_ReadWriteFile(void* data, u32 size, u32 cnt, int fileHandle, u32 flags,
 	return ret;
 }
 
-int FSA_ReadFile(void* data, u32 size, u32 cnt, int fileHandle, u32 flags)
+int FSA_ReadFile(void* data, uint32_t size, uint32_t cnt, int fileHandle, uint32_t flags)
 {
 	return _FSA_ReadWriteFile(data, size, cnt, fileHandle, flags, true);
 }
 
-int FSA_WriteFile(void* data, u32 size, u32 cnt, int fileHandle, u32 flags)
+int FSA_WriteFile(void* data, uint32_t size, uint32_t cnt, int fileHandle, uint32_t flags)
 {
 	return _FSA_ReadWriteFile(data, size, cnt, fileHandle, flags, false);
 }
 
 int FSA_StatFile(int handle, fileStat_s* out_data)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	inbuf[1] = handle;
 
@@ -275,11 +276,11 @@ int FSA_StatFile(int handle, fileStat_s* out_data)
 
 int FSA_ChangeMode(char* path, int mode)
 {
-    u8* iobuf = allocIobuf();
-	u8* inbuf8 = iobuf;
-	u8* outbuf8 = &iobuf[0x520];
-	u32* inbuf = (u32*)inbuf8;
-	u32* outbuf = (u32*)outbuf8;
+    uint8_t* iobuf = allocIobuf();
+	uint8_t* inbuf8 = iobuf;
+	uint8_t* outbuf8 = &iobuf[0x520];
+	uint32_t* inbuf = (uint32_t*)inbuf8;
+	uint32_t* outbuf = (uint32_t*)outbuf8;
 
 	strncpy((char*)&inbuf8[0x04], path, 0x27F);
 	inbuf[0x284 / 4] = mode;
@@ -291,13 +292,13 @@ int FSA_ChangeMode(char* path, int mode)
 	return ret;
 }
 
-int FSA_Format(char* device, char* fs_format, int flags, u32 what1, u32 what2)
+int FSA_Format(char* device, char* fs_format, int flags, uint32_t what1, uint32_t what2)
 {
-	u8* iobuf = allocIobuf();
-	u8* inbuf8 = iobuf;
-	u8* outbuf8 = &iobuf[0x520];
-	u32* inbuf = (u32*)inbuf8;
-	u32* outbuf = (u32*)outbuf8;
+	uint8_t* iobuf = allocIobuf();
+	uint8_t* inbuf8 = iobuf;
+	uint8_t* outbuf8 = &iobuf[0x520];
+	uint32_t* inbuf = (uint32_t*)inbuf8;
+	uint32_t* outbuf = (uint32_t*)outbuf8;
 
 	strncpy((char*)&inbuf8[0x04], device, 0x27F);
 	strncpy((char*)&inbuf8[0x284], fs_format, 8);
@@ -311,13 +312,13 @@ int FSA_Format(char* device, char* fs_format, int flags, u32 what1, u32 what2)
 }
 
 // type 4 :
-// 		0x08 : device size in sectors (u64)
-// 		0x10 : device sector size (u32)
-int FSA_GetDeviceInfo(char* device_path, int type, u32* out_data)
+// 		0x08 : device size in sectors (uint64_t)
+// 		0x10 : device sector size (uint32_t)
+int FSA_GetDeviceInfo(char* device_path, int type, uint32_t* out_data)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], device_path, 0x27F);
 	inbuf[0x284 / 4] = type;
@@ -357,9 +358,9 @@ int FSA_GetDeviceInfo(char* device_path, int type, u32* out_data)
 
 int FSA_GetVolumeInfo(char* volume_path, int type, fsa_volume_info* out)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], volume_path, 0x27F);
 
@@ -373,9 +374,9 @@ int FSA_GetVolumeInfo(char* volume_path, int type, fsa_volume_info* out)
 
 int FSA_RawOpen(char* device_path, int* outHandle)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	strncpy((char*)&inbuf[0x01], device_path, 0x27F);
 
@@ -389,9 +390,9 @@ int FSA_RawOpen(char* device_path, int* outHandle)
 
 int FSA_RawClose(int device_handle)
 {
-	u8* iobuf = allocIobuf();
-	u32* inbuf = (u32*)iobuf;
-	u32* outbuf = (u32*)&iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint32_t* inbuf = (uint32_t*)iobuf;
+	uint32_t* outbuf = (uint32_t*)&iobuf[0x520];
 
 	inbuf[1] = device_handle;
 
@@ -402,14 +403,14 @@ int FSA_RawClose(int device_handle)
 }
 
 // offset in blocks of 0x1000 bytes
-int FSA_RawRead(void* data, u32 size_bytes, u32 cnt, u64 blocks_offset, int device_handle)
+int FSA_RawRead(void* data, uint32_t size_bytes, uint32_t cnt, uint64_t blocks_offset, int device_handle)
 {
-	u8* iobuf = allocIobuf();
-	u8* inbuf8 = iobuf;
-	u8* outbuf8 = &iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint8_t* inbuf8 = iobuf;
+	uint8_t* outbuf8 = &iobuf[0x520];
 	iovec_s* iovec = (iovec_s*)&iobuf[0x7C0];
-	u32* inbuf = (u32*)inbuf8;
-	u32* outbuf = (u32*)outbuf8;
+	uint32_t* inbuf = (uint32_t*)inbuf8;
+	uint32_t* outbuf = (uint32_t*)outbuf8;
 
 	// note : offset_bytes = blocks_offset * size_bytes
 	inbuf[0x08 / 4] = (blocks_offset >> 32);
@@ -433,14 +434,14 @@ int FSA_RawRead(void* data, u32 size_bytes, u32 cnt, u64 blocks_offset, int devi
 	return ret;
 }
 
-int FSA_RawWrite(void* data, u32 size_bytes, u32 cnt, u64 blocks_offset, int device_handle)
+int FSA_RawWrite(void* data, uint32_t size_bytes, uint32_t cnt, uint64_t blocks_offset, int device_handle)
 {
-	u8* iobuf = allocIobuf();
-	u8* inbuf8 = iobuf;
-	u8* outbuf8 = &iobuf[0x520];
+	uint8_t* iobuf = allocIobuf();
+	uint8_t* inbuf8 = iobuf;
+	uint8_t* outbuf8 = &iobuf[0x520];
 	iovec_s* iovec = (iovec_s*)&iobuf[0x7C0];
-	u32* inbuf = (u32*)inbuf8;
-	u32* outbuf = (u32*)outbuf8;
+	uint32_t* inbuf = (uint32_t*)inbuf8;
+	uint32_t* outbuf = (uint32_t*)outbuf8;
 
 	inbuf[0x08 / 4] = (blocks_offset >> 32);
 	inbuf[0x0C / 4] = (blocks_offset & 0xFFFFFFFF);

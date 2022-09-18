@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef TITLEMANAGE_MENU_H
-#define TITLEMANAGE_MENU_H
+#pragma once
 
 #include "common.h"
 
@@ -21,5 +20,3 @@
 void titlemanage_menu_init();
 void titlemanage_menu_update();
 void titlemanage_menu_draw(bool screen);
-
-#endif

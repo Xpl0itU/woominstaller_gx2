@@ -79,20 +79,20 @@ static void setup_scene(void)
     vertexShader->mode = GX2_SHADER_MODE_UNIFORM_REGISTER;
     vertexShader->size = 0x139;
     vertexShader->program = memalign(0x100, vertexShader->size);
-    memcpy(vertexShader->program, (u8*)(texture2DData+0x24C), vertexShader->size);
+    memcpy(vertexShader->program, (uint8_t*)(texture2DData+0x24C), vertexShader->size);
     
     //Patch in vertex colors
-    *(u32*)(vertexShader->program+(0x1C * sizeof(u8))) = 0x88048013;
-    *(u32*)(vertexShader->program+(0x20 * sizeof(u8))) = 0x01C00100;
-    *(u32*)(vertexShader->program+(0x24 * sizeof(u8))) = 0x88060014;
-    *(u32*)(vertexShader->program+(0x28 * sizeof(u8))) = 0x26000000;
-    *(u32*)(vertexShader->program+(0x2C * sizeof(u8))) = 0x000000A0;
-    *(u32*)(vertexShader->program+(0x30 * sizeof(u8))) = 0x00000000;
-    *(u32*)(vertexShader->program+(0x34 * sizeof(u8))) = 0x00002000;
+    *(uint32_t*)(vertexShader->program+(0x1C * sizeof(uint8_t))) = 0x88048013;
+    *(uint32_t*)(vertexShader->program+(0x20 * sizeof(uint8_t))) = 0x01C00100;
+    *(uint32_t*)(vertexShader->program+(0x24 * sizeof(uint8_t))) = 0x88060014;
+    *(uint32_t*)(vertexShader->program+(0x28 * sizeof(uint8_t))) = 0x26000000;
+    *(uint32_t*)(vertexShader->program+(0x2C * sizeof(uint8_t))) = 0x000000A0;
+    *(uint32_t*)(vertexShader->program+(0x30 * sizeof(uint8_t))) = 0x00000000;
+    *(uint32_t*)(vertexShader->program+(0x34 * sizeof(uint8_t))) = 0x00002000;
     //End patch in vertex colors
     
     GX2Invalidate(GX2_INVALIDATE_MODE_CPU | GX2_INVALIDATE_MODE_SHADER, vertexShader->program, vertexShader->size);
-    memcpy(&vertexShader->regs, (u8*)(texture2DData+0x40), sizeof(vertexShader->regs));
+    memcpy(&vertexShader->regs, (uint8_t*)(texture2DData+0x40), sizeof(vertexShader->regs));
     
     //Patch in vertex colors
     vertexShader->regs.sq_pgm_resources_vs++;
@@ -106,7 +106,7 @@ static void setup_scene(void)
     vertexShader->uniformVarCount = 1;
     vertexShader->uniformVars = (GX2UniformVar*) malloc(vertexShader->uniformVarCount * sizeof(GX2UniformVar));
     vertexShader->uniformVars[0].name = "u_offset";
-    vertexShader->uniformVars[0].type = GX2_SHADER_VAR_TYPE_MATRIX4X4 ;
+    vertexShader->uniformVars[0].type = GX2_SHADER_VAR_TYPE_FLOAT4X4 ;
     vertexShader->uniformVars[0].count = 1;
     vertexShader->uniformVars[0].offset = 0;
     vertexShader->uniformVars[0].block = -1;
@@ -132,32 +132,32 @@ static void setup_scene(void)
     pixelShader->mode = GX2_SHADER_MODE_UNIFORM_REGISTER;
     pixelShader->size = 0x190;
     pixelShader->program = memalign(0x100, pixelShader->size);
-    memcpy(pixelShader->program, (u8*)(texture2DData+0x518), pixelShader->size);
+    memcpy(pixelShader->program, (uint8_t*)(texture2DData+0x518), pixelShader->size);
     
     
     //Patch in vertex colors
-    memset(pixelShader->program+(0x90*sizeof(u8)), 0, 0x100);
-    *(u32*)(pixelShader->program) = 0x30000000;
+    memset(pixelShader->program+(0x90*sizeof(uint8_t)), 0, 0x100);
+    *(uint32_t*)(pixelShader->program) = 0x30000000;
     
-    memcpy(pixelShader->program+(0x10*sizeof(u8)), pixelShader->program+(0x8*sizeof(u8)), 0x8);
-    *(u32*)(pixelShader->program+(0x8*sizeof(u8))) = 0x20000000;
-    *(u32*)(pixelShader->program+(0xC*sizeof(u8))) = 0x00000CA0;
+    memcpy(pixelShader->program+(0x10*sizeof(uint8_t)), pixelShader->program+(0x8*sizeof(uint8_t)), 0x8);
+    *(uint32_t*)(pixelShader->program+(0x8*sizeof(uint8_t))) = 0x20000000;
+    *(uint32_t*)(pixelShader->program+(0xC*sizeof(uint8_t))) = 0x00000CA0;
     
-    memcpy(pixelShader->program+(0x180*sizeof(u8)), pixelShader->program+(0x80*sizeof(u8)), 0x10);
-    memset(pixelShader->program+(0x80*sizeof(u8)), 0x0, 0x10);
+    memcpy(pixelShader->program+(0x180*sizeof(uint8_t)), pixelShader->program+(0x80*sizeof(uint8_t)), 0x10);
+    memset(pixelShader->program+(0x80*sizeof(uint8_t)), 0x0, 0x10);
     
-    *(u32*)(pixelShader->program+(0x100*sizeof(u8))) = 0x00200000;
-    *(u32*)(pixelShader->program+(0x104*sizeof(u8))) = 0x90000000;
-    *(u32*)(pixelShader->program+(0x108*sizeof(u8))) = 0x00248000;
-    *(u32*)(pixelShader->program+(0x10C*sizeof(u8))) = 0x90000020;
-    *(u32*)(pixelShader->program+(0x110*sizeof(u8))) = 0x00280001;
-    *(u32*)(pixelShader->program+(0x114*sizeof(u8))) = 0x90000040;
-    *(u32*)(pixelShader->program+(0x118*sizeof(u8))) = 0x002C8081;
-    *(u32*)(pixelShader->program+(0x11C*sizeof(u8))) = 0x90000060;
+    *(uint32_t*)(pixelShader->program+(0x100*sizeof(uint8_t))) = 0x00200000;
+    *(uint32_t*)(pixelShader->program+(0x104*sizeof(uint8_t))) = 0x90000000;
+    *(uint32_t*)(pixelShader->program+(0x108*sizeof(uint8_t))) = 0x00248000;
+    *(uint32_t*)(pixelShader->program+(0x10C*sizeof(uint8_t))) = 0x90000020;
+    *(uint32_t*)(pixelShader->program+(0x110*sizeof(uint8_t))) = 0x00280001;
+    *(uint32_t*)(pixelShader->program+(0x114*sizeof(uint8_t))) = 0x90000040;
+    *(uint32_t*)(pixelShader->program+(0x118*sizeof(uint8_t))) = 0x002C8081;
+    *(uint32_t*)(pixelShader->program+(0x11C*sizeof(uint8_t))) = 0x90000060;
     //End patch in vertex colors
     
     GX2Invalidate(GX2_INVALIDATE_MODE_CPU | GX2_INVALIDATE_MODE_SHADER, pixelShader->program, pixelShader->size);
-    memcpy(&pixelShader->regs, (u8*)(texture2DData+0x3A4), sizeof(pixelShader->regs));
+    memcpy(&pixelShader->regs, (uint8_t*)(texture2DData+0x3A4), sizeof(pixelShader->regs));
     
     //Patch in vertex colors
     pixelShader->regs.sq_pgm_resources_ps++;
@@ -173,7 +173,7 @@ static void setup_scene(void)
     GX2InitAttribStream(&attributes[2], vertexShader->attribVars[2].location, 2, 0, GX2_ATTRIB_FORMAT_FLOAT_32_32_32_32);
 
     //Fetch Shader
-    u32 shaderSize = GX2CalcFetchShaderSizeEx(3, GX2_FETCH_SHADER_TESSELLATION_NONE, GX2_TESSELLATION_MODE_DISCRETE);
+    uint32_t shaderSize = GX2CalcFetchShaderSizeEx(3, GX2_FETCH_SHADER_TESSELLATION_NONE, GX2_TESSELLATION_MODE_DISCRETE);
     fetchShaderProgramm = memalign(0x100, shaderSize);
     fetchShader = (GX2FetchShader *) malloc(sizeof(GX2FetchShader));
     GX2InitFetchShaderEx(fetchShader, fetchShaderProgramm, 3, attributes, GX2_FETCH_SHADER_TESSELLATION_NONE, GX2_TESSELLATION_MODE_DISCRETE);
@@ -308,9 +308,9 @@ bool app_running()
             gx2CommandBuffer = MEM2_alloc(0x400000, 0x40);
 
             //! initialize GX2 command buffer
-            u32 gx2_init_attributes[9];
+            uint32_t gx2_init_attributes[9];
             gx2_init_attributes[0] = GX2_INIT_CMD_BUF_BASE;
-            gx2_init_attributes[1] = (u32)gx2CommandBuffer;
+            gx2_init_attributes[1] = (uint32_t)gx2CommandBuffer;
             gx2_init_attributes[2] = GX2_INIT_CMD_BUF_POOL_SIZE;
             gx2_init_attributes[3] = 0x400000;
             gx2_init_attributes[4] = GX2_INIT_ARGC;
@@ -328,15 +328,15 @@ bool app_running()
             drcContextState = (GX2ContextState*)MEM2_alloc(sizeof(GX2ContextState), 0x100);
             GX2SetupContextStateEx(drcContextState, true);
 
-            u32 scanBufferSize = 0;
-            u32 scaleNeeded = 0;
+            uint32_t scanBufferSize = 0;
+            uint32_t scaleNeeded = 0;
 
-            s32 tvScanMode = GX2GetSystemTVScanMode();
-            s32 drcScanMode = GX2GetSystemDRCScanMode();
+            int32_t tvScanMode = GX2GetSystemTVScanMode();
+            int32_t drcScanMode = GX2GetSystemDRCScanMode();
 
-            s32 tvRenderMode;
-            u32 tvWidth = 0;
-            u32 tvHeight = 0;
+            int32_t tvRenderMode;
+            uint32_t tvWidth = 0;
+            uint32_t tvHeight = 0;
 
             switch(tvScanMode)
             {
@@ -360,11 +360,11 @@ bool app_running()
                 break;
             }
 
-            s32 tvAAMode = GX2_AA_MODE1X;
-            s32 drcAAMode = GX2_AA_MODE1X;
+            int32_t tvAAMode = GX2_AA_MODE1X;
+            int32_t drcAAMode = GX2_AA_MODE1X;
             
-            u32 size, align;
-            u32 surface_format = GX2_ATTRIB_FORMAT_UNORM_8_8_8_8 | 0x10;
+            uint32_t size, align;
+            uint32_t surface_format = GX2_ATTRIB_FORMAT_UNORM_8_8_8_8 | 0x10;
 
             //Allocate scan buffer for TV
             GX2CalcTVSize(tvRenderMode, surface_format, GX2_BUFFERING_MODE_DOUBLE, &scanBufferSize, &scaleNeeded);
@@ -413,7 +413,7 @@ bool app_running()
             //Allocate anti aliasing buffers to MEM2
             if (tvColorBuffer.surface.aa)
             {
-                u32 auxSize, auxAlign;
+                uint32_t auxSize, auxAlign;
                 GX2CalcColorBufferAuxInfo(&tvColorBuffer, &auxSize, &auxAlign);
                 tvColorBuffer.aaBuffer = MEM2_alloc(auxSize, auxAlign);
 
@@ -424,7 +424,7 @@ bool app_running()
 
             if (drcColorBuffer.surface.aa)
             {
-                u32 auxSize, auxAlign;
+                uint32_t auxSize, auxAlign;
                 GX2CalcColorBufferAuxInfo(&drcColorBuffer, &auxSize, &auxAlign);
                 drcColorBuffer.aaBuffer = MEM2_alloc(auxSize, auxAlign);
                 drcColorBuffer.aaSize = auxSize;

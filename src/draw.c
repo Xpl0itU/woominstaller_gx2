@@ -162,9 +162,9 @@ void render_texture_partial_color(GX2Texture *render_texture, float x_pos, float
     
     unsigned int vtxCount = sizeof(g_vertex_buffer_data_temp) / (sizeof(float) * 3);
     
-    GX2SetAttribBuffer(2, sizeof(g_color_buffer_data_temp), sizeof(f32) * 4, g_color_buffer_data);
-    GX2SetAttribBuffer(1, sizeof(g_tex_buffer_data_temp), sizeof(f32) * 2, g_tex_buffer_data);
-    GX2SetAttribBuffer(0, sizeof(g_vertex_buffer_data_temp), sizeof(f32) * 3, g_vertex_buffer_data);
+    GX2SetAttribBuffer(2, sizeof(g_color_buffer_data_temp), sizeof(float) * 4, g_color_buffer_data);
+    GX2SetAttribBuffer(1, sizeof(g_tex_buffer_data_temp), sizeof(float) * 2, g_tex_buffer_data);
+    GX2SetAttribBuffer(0, sizeof(g_vertex_buffer_data_temp), sizeof(float) * 3, g_vertex_buffer_data);
     GX2SetVertexUniformReg(vertexShader->uniformVars[0].offset, 16, (uint32_t*)projectionMtx);
 
     GX2DrawEx(GX2_PRIMITIVE_MODE_TRIANGLE_STRIP, vtxCount, 0, 1);

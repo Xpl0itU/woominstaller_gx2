@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-#ifndef __MEMORY_H_
-#define __MEMORY_H_
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,13 +42,13 @@ static inline void *read_file_to_bytes(char *path)
     if(!load_file) return NULL;
    
     fseek(load_file, 0, SEEK_END);
-    u32 size = ftell(load_file);
+    uint32_t size = ftell(load_file);
     rewind(load_file);
    
     void *data = malloc(size);
     if(!data) return NULL;
    
-    fread(data, size, sizeof(u8), load_file);
+    fread(data, size, sizeof(uint8_t), load_file);
     fclose(load_file);
     
     return data;
@@ -58,5 +57,3 @@ static inline void *read_file_to_bytes(char *path)
 #ifdef __cplusplus
 }
 #endif
-
-#endif // __MEMORY_H_

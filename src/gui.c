@@ -32,6 +32,7 @@ GX2Texture textureDRCCornerButton;
 GX2Texture textureDRCBackImage;
 GX2Texture textureDRCTitleButton;
 GX2Texture fontTexture;
+GX2Texture textureProgressBar;
 
 //Stuff for state
 VPADStatus vpad;

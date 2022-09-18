@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef FILEBROWSE_MENU_H
-#define FILEBROWSE_MENU_H
+#pragma once
 
 #include "common.h"
 
@@ -24,5 +23,3 @@ void filebrowse_menu_init();
 void filebrowse_menu_deinit();
 void filebrowse_menu_update();
 void filebrowse_menu_draw(bool screen);
-
-#endif

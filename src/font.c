@@ -20,7 +20,7 @@
 #include "ezxml.h"
 #include "memory.h"
 
-GX2Texture fontTexture;
+extern GX2Texture fontTexture;
 
 int font_tex_x[0x10000]; 
 int font_tex_y[0x10000];
@@ -95,7 +95,7 @@ void font_draw_string(float x, float y, float scale, char* string)
 
     for(int i = 0; i < strlen(string); i++)
     {
-        u8 character = string[i];
+        uint8_t character = string[i];
         render_texture_partial_color(renderTexture, draw_x+((float)font_tex_xoffset[character])*scale, draw_y-((float)font_tex_height[character])*scale-((float)font_tex_yoffset[character])*scale+((float)font_base)*scale, ((float)font_tex_width[character])*scale, ((float)font_tex_height[character])*scale, font_tex_x[character], font_tex_y[character], font_tex_width[character], font_tex_height[character], r, g, b, a);
         
         draw_x += ((float)font_tex_xadvance[character])*scale;
@@ -112,7 +112,7 @@ int font_measure_string_width(float scale, char *string)
     float draw_width = 0;
     for(int i = 0; i < strlen(string); i++)
     {
-        u8 character = string[i];
+        uint8_t character = string[i];
         draw_width += ((float)font_tex_xadvance[character])*scale;
     }
     

@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef BUTTON_H
-#define BUTTON_H
+#pragma once
 
 #include <wut.h>
 #include <memory.h>
@@ -91,7 +90,5 @@ void button_add_inflate_event(button_t *button, void *callback);
 void button_add_inflate_release_event(button_t *button, void *callback);
 void button_add_deflate_event(button_t *button, void *callback);
 
-void button_add_button_map(button_t *button, u32 mask);
-void button_remove_button_map(button_t *button, u32 mask);
-
-#endif
+void button_add_button_map(button_t *button, uint32_t mask);
+void button_remove_button_map(button_t *button, uint32_t mask);

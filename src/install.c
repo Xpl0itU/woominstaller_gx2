@@ -160,7 +160,7 @@ int install_queue_thread(int argc, const char **argv)
                 ezxml_t next_entry = ezxml_idx(entries, woomy_install_index++);
                 if(next_entry)
                 {
-                    woomy_extract_total = (u32)(strtoul(ezxml_attr(next_entry, "entries"), NULL, 10) & 0xFFFFFFFF);
+                    woomy_extract_total = (uint32_t)(strtoul(ezxml_attr(next_entry, "entries"), NULL, 10) & 0xFFFFFFFF);
                     installItems[0].woomy = true;
                     installItems[0].pre_install = true;
                     installItems[0].total_unpack = woomy_extract_total;
@@ -190,7 +190,7 @@ int install_queue_thread(int argc, const char **argv)
 
                         if (!strncmp(file_stat.m_filename, ezxml_attr(next_entry, "folder"), strlen(ezxml_attr(next_entry, "folder"))) && !mz_zip_reader_is_file_a_directory(&woomy_archive, i))
                         {
-                            OSReport("Extracting '%s' (Comment: \"%s\", Uncompressed size: %u, Compressed size: %u)\n", file_stat.m_filename, file_stat.m_comment, (u32)file_stat.m_uncomp_size, (u32)file_stat.m_comp_size);
+                            OSReport("Extracting '%s' (Comment: \"%s\", Uncompressed size: %u, Compressed size: %u)\n", file_stat.m_filename, file_stat.m_comment, (uint32_t)file_stat.m_uncomp_size, (uint32_t)file_stat.m_comp_size);
                             
                             snprintf(temp_tmp_filename, 0x200, "/vol/external01/tmp/%s", file_stat.m_filename + strlen(ezxml_attr(next_entry, "folder")));
                             OSReport("%s\n", temp_tmp_filename);
@@ -357,7 +357,7 @@ void install_add_to_queue(char *path)
                 else
                     woomy_archive_name = woomy_metadata_name->txt;
                     
-                installItems[i].archiveName = calloc(0x200, sizeof(u8));
+                installItems[i].archiveName = calloc(0x200, sizeof(uint8_t));
                 strcpy(installItems[i].archiveName, woomy_archive_name);
                     
                 //Show the icon if it's available
@@ -402,36 +402,36 @@ void install_init_start_queue_manager()
     {
         //Fake decaf names
         numDevices = 8;
-        strcpy(devicelist->devices[0].name, "usb");
-        strcpy(devicelist->devices[1].name, "slccmpt");
-        strcpy(devicelist->devices[2].name, "slc");
-        strcpy(devicelist->devices[3].name, "sdcard");
-        strcpy(devicelist->devices[4].name, "ramdisk");
-        strcpy(devicelist->devices[5].name, "drh");
-        strcpy(devicelist->devices[6].name, "bt");
-        strcpy(devicelist->devices[7].name, "mlc");
+        strcpy(devicelist->devices[0].path, "usb");
+        strcpy(devicelist->devices[1].path, "slccmpt");
+        strcpy(devicelist->devices[2].path, "slc");
+        strcpy(devicelist->devices[3].path, "sdcard");
+        strcpy(devicelist->devices[4].path, "ramdisk");
+        strcpy(devicelist->devices[5].path, "drh");
+        strcpy(devicelist->devices[6].path, "bt");
+        strcpy(devicelist->devices[7].path, "mlc");
     }
     
     //Iterate devices to discover install points
     int numUSB = 1;
     for(int i = 0; i < numDevices; i++)
     {
-        if(!strcmp(devicelist->devices[i].name, "usb"))
+        if(!strcmp(devicelist->devices[i].path, "usb"))
         {
             if(numUSB == 1)
                 selectedInstallTarget = numInstallDevices;
         
             installDevices[numInstallDevices].deviceID = MCP_INSTALL_TARGET_USB;
             installDevices[numInstallDevices].deviceNum = numUSB++;
-            installDevices[numInstallDevices].deviceName = devicelist->devices[i].name;
+            installDevices[numInstallDevices].deviceName = devicelist->devices[i].path;
             numInstallDevices++;
             
         }
-        else if(!strcmp(devicelist->devices[i].name, "mlc"))
+        else if(!strcmp(devicelist->devices[i].path, "mlc"))
         {
             installDevices[numInstallDevices].deviceID = MCP_INSTALL_TARGET_MLC;
             installDevices[numInstallDevices].deviceNum = 1;
-            installDevices[numInstallDevices].deviceName = devicelist->devices[i].name;
+            installDevices[numInstallDevices].deviceName = devicelist->devices[i].path;
             numInstallDevices++;
         }
     }
@@ -455,7 +455,7 @@ int install_get_target()
     return selectedInstallTarget;
 }
 
-InstallDevice *install_get_device(u8 device_id)
+InstallDevice *install_get_device(uint8_t device_id)
 {
     return &installDevices[device_id];
 }
@@ -483,7 +483,7 @@ char *install_get_current_install_name()
     return woomy_entry_name;
 }
 
-u8 install_get_queue_install_device(int index)
+uint8_t install_get_queue_install_device(int index)
 {
     if(installItems[index].targetPath == NULL) return 0;
     

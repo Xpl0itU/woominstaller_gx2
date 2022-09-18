@@ -15,29 +15,29 @@ void initialize_entry_buttons();
 void move_up_directory();
 
 //Global vars
-button_t *button_back;
+extern button_t *button_back;
 bool is_initialized = false;
 bool transition_out = false;
 float transition_y = 0.0f;
-u32 last_button_state = 0;
+uint32_t last_button_state = 0;
 
 //File browsing state
-struct dirent **directory_read;
-char *current_directory;
+extern struct dirent **directory_read;
+extern char *current_directory;
 char *current_ios_directory;
-int num_entries;
+extern int num_entries;
 int dirLevel = 0;
 
 bool file_transition_in = false;
 bool file_transition_out = false;
-int next_num_entries;
+extern int next_num_entries;
 
 //Scroll state
-bool last_tp_touched = false;
-float start_tp_x;
-float start_tp_y;
-float last_tp_x;
-float last_tp_y;
+extern bool last_tp_touched;
+extern float start_tp_x;
+extern float start_tp_y;
+extern float last_tp_x;
+extern float last_tp_y;
 
 int queue_count = 0;
 float install_header_scroll = 0.0f;
@@ -47,7 +47,7 @@ float stick_velocity = 10.0f;
 bool scrolling_y = false;
 bool is_using_touch = true; //TODO: Maybe allow buttons for file select?
 
-button_t **entry_buttons;
+extern button_t **entry_buttons;
 
 void entry_button_press(button_t *button)
 {

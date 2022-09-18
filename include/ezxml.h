@@ -22,8 +22,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _EZXML_H
-#define _EZXML_H
+#pragma once
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -164,5 +163,3 @@ ezxml_t ezxml_insert(ezxml_t xml, ezxml_t dest, size_t off);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // _EZXML_H

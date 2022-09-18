@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef INSTALL_H
-#define INSTALL_H
+#pragma once
 
 #include <coreinit/core.h>
 #include <coreinit/debug.h>
@@ -30,6 +29,10 @@
 
 #define INSTALL_QUEUE_SIZE 0x100
 
+typedef struct MCPDeviceList {
+    MCPDevice devices[32];
+} MCPDeviceList;
+
 typedef struct InstallQueueItem
 {
     char *targetPath;
@@ -38,11 +41,11 @@ typedef struct InstallQueueItem
     bool installing;
     bool woomy;
     float percent_complete;
-    u32 current_unpack;
-    u32 total_unpack;
-    u32 current_content;
-    u32 total_content;
-    u8 targetDevice;
+    uint32_t current_unpack;
+    uint32_t total_unpack;
+    uint32_t current_content;
+    uint32_t total_content;
+    uint8_t targetDevice;
     GX2Texture *texture;
 } InstallQueueItem;
 
@@ -60,12 +63,10 @@ void install_deinit();
 
 int install_get_target();
 void install_cycle_device();
-InstallDevice *install_get_device(u8 device_id);
+InstallDevice *install_get_device(uint8_t device_id);
 void install_abort_current();
 InstallQueueItem *install_get_queue_item(int index);
 char *install_get_queue_path(int index);
 char *install_get_current_install_name();
-u8 install_get_queue_install_device(int index);
+uint8_t install_get_queue_install_device(int index);
 GX2Texture *install_get_queue_texture(int index);
-
-#endif

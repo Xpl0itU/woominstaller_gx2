@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef INSTALL_MENU_H
-#define INSTALL_MENU_H
+#pragma once
 
 #include <wut.h>
 #include <memory.h>
@@ -19,6 +18,7 @@
 #include <dirent.h>
 #include <stdio.h>
 
+#include "common.h"
 #include "draw.h"
 #include "font.h"
 #include "gui.h"
@@ -29,5 +29,3 @@ void install_menu_init();
 void install_menu_deinit();
 void install_menu_update();
 void install_menu_draw(bool screen);
-
-#endif

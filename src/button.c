@@ -124,12 +124,12 @@ button->deflate_events = realloc(button->deflate_events, ++button->num_deflate_e
     button->deflate_events[button->num_deflate_events-1] = callback;
 }
 
-void button_add_button_map(button_t *button, u32 mask)
+void button_add_button_map(button_t *button, uint32_t mask)
 {
     button->button_mask |= mask;
 }
 
-void button_remove_button_map(button_t *button, u32 mask)
+void button_remove_button_map(button_t *button, uint32_t mask)
 {
     button->button_mask &= (0xFFFFFFFF - mask);
 }

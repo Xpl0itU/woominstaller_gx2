@@ -28,17 +28,17 @@ void load_tga(GX2Texture *texture, void* img_data)
     
     if(tga_header->y_origin != 0)
     {
-        for(int i = 0; i < texture->surface.imageSize/sizeof(u32); i++)
+        for(int i = 0; i < texture->surface.imageSize/sizeof(uint32_t); i++)
         {
-            u32 *tga_bgra_data = (u32*)(img_data+sizeof(tga_hdr));
-            u32 *out_data = (u32*)(texture->surface.image);
+            uint32_t *tga_bgra_data = (uint32_t*)(img_data+sizeof(tga_hdr));
+            uint32_t *out_data = (uint32_t*)(texture->surface.image);
             out_data[i] = ((tga_bgra_data[i] & 0x00FF00FF)) | ((tga_bgra_data[i] & 0xFF000000) >> 16) | ((tga_bgra_data[i] & 0x0000FF00) << 16);
         }
     }
     else
     {
-        u32 *tga_bgra_data = (u32*)(img_data+sizeof(tga_hdr));
-        u32 *out_data = (u32*)(texture->surface.image);
+        uint32_t *tga_bgra_data = (uint32_t*)(img_data+sizeof(tga_hdr));
+        uint32_t *out_data = (uint32_t*)(texture->surface.image);
         for(int x = 0; x < width; x++)
         {
             for(int y = 0; y < height; y++)
@@ -46,7 +46,7 @@ void load_tga(GX2Texture *texture, void* img_data)
                 out_data[((height-y-1)*width)+x] = ((tga_bgra_data[(y*width)+x] & 0x00FF00FF)) | ((tga_bgra_data[(y*width)+x] & 0xFF000000) >> 16) | ((tga_bgra_data[(y*width)+x] & 0x0000FF00) << 16);
             }
         }
-        for(int i = 0; i < texture->surface.imageSize/sizeof(u32); i++)
+        for(int i = 0; i < texture->surface.imageSize/sizeof(uint32_t); i++)
         {
             
             
@@ -59,10 +59,10 @@ void load_tga(GX2Texture *texture, void* img_data)
 gdImagePtr get_gdimage_from_path(char* path)
 {
     // load our image
-    u8 *img_data = read_file_to_bytes(path);
+    uint8_t *img_data = read_file_to_bytes(path);
     if(!img_data) 
         return NULL;
-    u32 img_data_size = malloc_usable_size(img_data);
+    uint32_t img_data_size = malloc_usable_size(img_data);
     
     // determine image type and create gdImage
     gdImagePtr gd_img = NULL;
@@ -73,13 +73,13 @@ gdImagePtr get_gdimage_from_path(char* path)
         gd_img = gdImageCreateFromBmpPtr(img_data_size, img_data);
     }
     // PNG
-    else if(*(u32*)img_data == 0x89504E47)
+    else if(*(uint32_t*)img_data == 0x89504E47)
     {
         OSReport("Loading PNG...\n");
         gd_img = gdImageCreateFromPngPtr(img_data_size, img_data);
     }
     // JPG (for the love of god please don't use JPG textures)
-    else if(*(u16*)img_data == 0xFFD8)
+    else if(*(uint16_t*)img_data == 0xFFD8)
     {
         OSReport("Loading JPG...\n");
         gd_img = gdImageCreateFromJpegPtr(img_data_size, img_data);
@@ -97,43 +97,43 @@ gdImagePtr get_gdimage_from_path(char* path)
     return gd_img;
 }
 
-void gd_image_mask_to_unorm_R8G8B8A8(gdImagePtr gdImg, gdImagePtr gdMask, u32 *img_buffer, u32 width, u32 height, u32 pitch)
+void gd_image_mask_to_unorm_R8G8B8A8(gdImagePtr gdImg, gdImagePtr gdMask, uint32_t *img_buffer, uint32_t width, uint32_t height, uint32_t pitch)
 {
-    for(u32 y = 0; y < height; ++y)
+    for(uint32_t y = 0; y < height; ++y)
     {
-        for(u32 x = 0; x < width; ++x)
+        for(uint32_t x = 0; x < width; ++x)
         {
-			u32 pixel = gdImageGetPixel(gdImg, x, y);
+			uint32_t pixel = gdImageGetPixel(gdImg, x, y);
 
-			u8 a = 254 - 2*((u8)gdImageAlpha(gdImg, pixel));
+			uint8_t a = 254 - 2*((uint8_t)gdImageAlpha(gdImg, pixel));
 			if(a == 254) a++;
 
-            u8 r = gdImageRed(gdImg, pixel);
-            u8 g = gdImageGreen(gdImg, pixel);
-            u8 b = gdImageBlue(gdImg, pixel);
+            uint8_t r = gdImageRed(gdImg, pixel);
+            uint8_t g = gdImageGreen(gdImg, pixel);
+            uint8_t b = gdImageBlue(gdImg, pixel);
             
-            u8 ma = gdImageRed(gdMask, gdImageGetPixel(gdMask, x, y));
-            a = (u8)(a * (ma / 255));
+            uint8_t ma = gdImageRed(gdMask, gdImageGetPixel(gdMask, x, y));
+            a = (uint8_t)(a * (ma / 255));
 
             img_buffer[y * pitch + x] = (r << 24) | (g << 16) | (b << 8) | (a);
         }
     }
 }
 
-void gd_image_to_unorm_R8G8B8A8(gdImagePtr gdImg, u32 *img_buffer, u32 width, u32 height, u32 pitch)
+void gd_image_to_unorm_R8G8B8A8(gdImagePtr gdImg, uint32_t *img_buffer, uint32_t width, uint32_t height, uint32_t pitch)
 {
-    for(u32 y = 0; y < height; ++y)
+    for(uint32_t y = 0; y < height; ++y)
     {
-        for(u32 x = 0; x < width; ++x)
+        for(uint32_t x = 0; x < width; ++x)
         {
-			u32 pixel = gdImageGetPixel(gdImg, x, y);
+			uint32_t pixel = gdImageGetPixel(gdImg, x, y);
 
-			u8 a = 254 - 2*((u8)gdImageAlpha(gdImg, pixel));
+			uint8_t a = 254 - 2*((uint8_t)gdImageAlpha(gdImg, pixel));
 			if(a == 254) a++;
 
-            u8 r = gdImageRed(gdImg, pixel);
-            u8 g = gdImageGreen(gdImg, pixel);
-            u8 b = gdImageBlue(gdImg, pixel);
+            uint8_t r = gdImageRed(gdImg, pixel);
+            uint8_t g = gdImageGreen(gdImg, pixel);
+            uint8_t b = gdImageBlue(gdImg, pixel);
 
             img_buffer[y * pitch + x] = (r << 24) | (g << 16) | (b << 8) | (a);
         }
@@ -153,8 +153,8 @@ bool load_img_texture(GX2Texture *texture, char *path)
         return false;
     }
     
-    u32 height = gdImageSY(img);
-    u32 width = gdImageSX(img);
+    uint32_t height = gdImageSY(img);
+    uint32_t width = gdImageSX(img);
     
     // create a texture
     GX2InitTexture(texture, width, height, 1, 0, GX2_SURFACE_FORMAT_UNORM_R8_G8_B8_A8, GX2_SURFACE_DIM_TEXTURE_2D, GX2_TILE_MODE_LINEAR_ALIGNED);
@@ -199,8 +199,8 @@ bool load_img_texture_mask(GX2Texture *texture, char *path, char *mask)
         return false;
     }
     
-    u32 height = gdImageSY(img);
-    u32 width = gdImageSX(img);
+    uint32_t height = gdImageSY(img);
+    uint32_t width = gdImageSX(img);
     
     // create a texture
     GX2InitTexture(texture, width, height, 1, 0, GX2_SURFACE_FORMAT_UNORM_R8_G8_B8_A8, GX2_SURFACE_DIM_TEXTURE_2D, GX2_TILE_MODE_LINEAR_ALIGNED);

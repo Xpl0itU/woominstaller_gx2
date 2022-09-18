@@ -9,8 +9,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,5 +29,3 @@
 #include <coreinit/mcp.h>
 
 int read_directory(char *path, struct dirent** out);
-
-#endif

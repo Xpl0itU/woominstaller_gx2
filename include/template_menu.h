@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef TEMPLATE_MENU_H
-#define TEMPLATE_MENU_H
+#pragma once
 
 #include <wut.h>
 #include <memory.h>
@@ -25,5 +24,3 @@
 void template_menu_init();
 void template_menu_update();
 void template_menu_draw(bool screen);
-
-#endif

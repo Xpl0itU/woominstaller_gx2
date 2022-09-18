@@ -8,8 +8,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef DRAW_H
-#define DRAW_H
+#pragma once
 
 #include <gx2/mem.h>
 #include <gx2/draw.h>
@@ -31,12 +30,12 @@
 #define TARGET_WIDTH (1920)
 #define TARGET_HEIGHT (1080)
 
-GX2VertexShader *vertexShader;
-GX2PixelShader *pixelShader;
-GX2FetchShader *fetchShader;
-GX2AttribStream *attributes;
-void *fetchShaderProgramm;
-mat4_t projectionMtx;
+extern GX2VertexShader *vertexShader;
+extern GX2PixelShader *pixelShader;
+extern GX2FetchShader *fetchShader;
+extern GX2AttribStream *attributes;
+extern void *fetchShaderProgramm;
+extern mat4_t projectionMtx;
 
 void clean_tex_allocs();
 
@@ -53,5 +52,3 @@ void render_texture_color(GX2Texture *render_texture, float x_pos, float y_pos, 
 void render_texture(GX2Texture *render_texture, float x_pos, float y_pos, float width, float height);
 void render_texture_nostretch_color(GX2Texture *render_texture, float x_pos, float y_pos, float x_corner_size, float top_y_corner_size, float bottom_y_corner_size, float width, float height, float r, float g, float b, float a);
 void render_texture_nostretch(GX2Texture *render_texture, float x_pos, float y_pos, float x_corner_size, float top_y_corner_size, float bottom_y_corner_size, float width, float height);
-
-#endif

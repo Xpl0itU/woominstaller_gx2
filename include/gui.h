@@ -9,8 +9,7 @@
  *  see file LICENSE.md or https://www.gnu.org/licenses/lgpl-2.1.txt
  */
 
-#ifndef GUI_H
-#define GUI_H
+#pragma once
 
 #include <wut.h>
 #include <memory.h>
@@ -34,41 +33,39 @@ enum available_states
 #define INSTALL_COLOR 0.192f, 0.404f, 0.737f, 1.0f
 
 //Common GUI Textures
-GX2Texture texture;
-GX2Texture textureBackdrop;
-GX2Texture textureHeader;
-GX2Texture textureInfoHeader;
-GX2Texture textureContent;
-GX2Texture textureContentSubheader;
-GX2Texture textureBullet;
-GX2Texture textureFolder;
-GX2Texture textureFSTFolder;
-GX2Texture textureYButton;
-GX2Texture textureIconBack;
-GX2Texture textureProgressBar;
-GX2Texture textureDRCArrow;
-GX2Texture textureDRCButton;
-GX2Texture textureDRCInstall;
-GX2Texture textureDRCShadow;
-GX2Texture textureDRCMeme;
-GX2Texture textureDRCCornerButton;
-GX2Texture textureDRCBackImage;
-GX2Texture textureDRCTitleButton;
-GX2Texture fontTexture;
+extern GX2Texture texture;
+extern GX2Texture textureBackdrop;
+extern GX2Texture textureHeader;
+extern GX2Texture textureInfoHeader;
+extern GX2Texture textureContent;
+extern GX2Texture textureContentSubheader;
+extern GX2Texture textureBullet;
+extern GX2Texture textureFolder;
+extern GX2Texture textureFSTFolder;
+extern GX2Texture textureYButton;
+extern GX2Texture textureIconBack;
+extern GX2Texture textureProgressBar;
+extern GX2Texture textureDRCArrow;
+extern GX2Texture textureDRCButton;
+extern GX2Texture textureDRCInstall;
+extern GX2Texture textureDRCShadow;
+extern GX2Texture textureDRCMeme;
+extern GX2Texture textureDRCCornerButton;
+extern GX2Texture textureDRCBackImage;
+extern GX2Texture textureDRCTitleButton;
+extern GX2Texture fontTexture;
 
 //State variables
-VPADStatus vpad;
-float tpXPos;
-float tpYPos;
-bool tpTouched;
-bool app_is_running;
+extern VPADStatus vpad;
+extern float tpXPos;
+extern float tpYPos;
+extern bool tpTouched;
+extern bool app_is_running;
 
-int current_state;
+extern int current_state;
 
 void gui_init();
 void gui_transition_update();
 void gui_transition_in(float start_scale, float start_xshift, float start_yshift, float frames);
 void gui_transition_out(float end_scale, float end_xshift, float end_yshift, float frames);
 bool gui_transition_done();
-
-#endif
