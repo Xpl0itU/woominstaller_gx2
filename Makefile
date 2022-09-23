@@ -35,10 +35,10 @@ BUILD		:=	build
 SOURCES		:=	src src/matrix
 DATA		:=	data
 INCLUDES	:=	include
-CONTENT		:=
-ICON		:=	
-TV_SPLASH	:=	
-DRC_SPLASH	:=	
+CONTENT		:=  woominstaller_gx2/content
+ICON		:=	woominstaller_gx2/meta/iconTex.tga
+TV_SPLASH	:=	woominstaller_gx2/meta/bootTvTex.tga
+DRC_SPLASH	:=	woominstaller_gx2/meta/bootTvTex.tga
 
 #-------------------------------------------------------------------------------
 # options for code generation

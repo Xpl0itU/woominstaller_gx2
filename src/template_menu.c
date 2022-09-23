@@ -9,6 +9,8 @@
  */
 
 #include "titlemanage_menu.h"
+#include "install_menu.h"
+#include "filebrowse_menu.h"
 
 //Screen transition state
 int template_next_state;
